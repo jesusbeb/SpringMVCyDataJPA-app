@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -41,6 +42,12 @@ public class Cliente implements Serializable {
 	//atributo que se genera al heredar de Serializable. En JPA serializamos cuando guardamos un objeto en 
 	//la sesion http es recomendable siempre implementar serializable para las clases Entity con JPA
 	private static final long serialVersionUID = 1L;
+	
+	//PrePersist es para que se ejecute antes de que se guarde en la BD. Aqui asignamos la fecha
+	@PrePersist
+	public void prePersist() {
+		createAt = new Date();
+	}
 
 	public Long getId() {
 		return id;
