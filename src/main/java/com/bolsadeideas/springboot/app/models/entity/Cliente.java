@@ -3,6 +3,8 @@ package com.bolsadeideas.springboot.app.models.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,18 +39,21 @@ public class Cliente implements Serializable {
 	@Column(name = "create_at")
 	//@Temporal indica el formato en que se guardara la fecha. DATE guarda solo la fecha sin horas ni minutos
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern="yyyy-MM-dd") //patron de fecha que se usara
 	private Date createAt;
 
 	//atributo que se genera al heredar de Serializable. En JPA serializamos cuando guardamos un objeto en 
 	//la sesion http es recomendable siempre implementar serializable para las clases Entity con JPA
 	private static final long serialVersionUID = 1L;
 	
+	/* Se agregara ahora por formulario
 	//PrePersist es para que se ejecute antes de que se guarde en la BD. Aqui asignamos la fecha
 	@PrePersist
 	public void prePersist() {
 		createAt = new Date();
 	}
-
+	*/
+	
 	public Long getId() {
 		return id;
 	}
