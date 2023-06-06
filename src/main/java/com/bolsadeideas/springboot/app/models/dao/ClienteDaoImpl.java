@@ -31,4 +31,12 @@ public class ClienteDaoImpl implements IClienteDao {
 		return em.createQuery("from Cliente").getResultList();
 	}
 
+	@Override
+	@Transactional
+	public void save(Cliente cliente) {
+		//toma el objeto cliente y lo guarda dentro del contexto de persistencia (JPA). Va a sincronizar con
+		//la BD y hara el insert en la tabla, automaticamente
+		em.persist(cliente); 
+	}
+
 }

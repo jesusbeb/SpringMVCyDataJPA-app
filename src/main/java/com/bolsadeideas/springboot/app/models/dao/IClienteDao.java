@@ -13,4 +13,7 @@ public interface IClienteDao {
 
 	//metodo que retonar una lista de Cliente, que es la clase que esta mapeada a la tabla
 	public List<Cliente> findAll();
+	
+	//Metodo para guardar un cliente
+	public void save(Cliente cliente);
 }
