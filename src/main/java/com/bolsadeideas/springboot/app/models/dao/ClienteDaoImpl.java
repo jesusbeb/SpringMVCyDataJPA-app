@@ -10,6 +10,7 @@ import com.bolsadeideas.springboot.app.models.entity.Cliente;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+
 //Repository es una anotacion de Spring para anotar la clase como componente de persistencia de accedo a datos
 @Repository
 public class ClienteDaoImpl implements IClienteDao {
@@ -19,6 +20,8 @@ public class ClienteDaoImpl implements IClienteDao {
 	//@PersistenceContext contiene la unidad de persistencia. De forma automatica inyectara el IdentityManager segun la configuracion de la unidad de persistencia
 	@PersistenceContext
 	private EntityManager em;
+	
+	
 	
 	//SuppressWarnings("unchecked") omite los warning. En este caso el que se genera abajo en createQuery
 	//Transactional marca el metodo como transaccional y se coloca como solo lectura ya que es solo una consulta, si
@@ -31,6 +34,8 @@ public class ClienteDaoImpl implements IClienteDao {
 		return em.createQuery("from Cliente").getResultList();
 	}
 
+	
+	
 	@Override
 	@Transactional
 	public void save(Cliente cliente) {
@@ -42,12 +47,31 @@ public class ClienteDaoImpl implements IClienteDao {
 			em.persist(cliente); //crea un nuevo cliente
 		}
 	}
-
+	
+	
+	
 	@Override
+	@Transactional
+	public void delete(Long id) {
+		/**
+		//obtenemos el cliente por id usando findOne
+		Cliente cliente = findOne(id);
+		//con el entity manager usamos el metodo remove y le pasamos el objeto
+		em.remove(cliente);*/
+		//en menos lineas, usamos remove, el metodo findOne y se elimina
+		em.remove(findOne(id));
+	}
+
+	
+	
+	@Override
+	@Transactional(readOnly=true)
 	public Cliente findOne(Long id) {
 		//metodo find del JPA, pasamos el nombre de la clase con Cliente.class y el id
 		//Con esto JPA automaticamente va a la base de datos y nos da el objeto Cliente
 		return em.find(Cliente.class, id);
 	}
+
+
 
 }
