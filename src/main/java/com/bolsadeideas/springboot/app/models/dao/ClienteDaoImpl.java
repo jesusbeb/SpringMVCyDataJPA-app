@@ -27,7 +27,6 @@ public class ClienteDaoImpl implements IClienteDao {
 	//Transactional marca el metodo como transaccional y se coloca como solo lectura ya que es solo una consulta, si
 	//fuera un insert, se omite el readOnly
 	@SuppressWarnings("unchecked")
-	@Transactional(readOnly=true)
 	@Override
 	public List<Cliente> findAll() {
 		//Consulta con createQuery a la clase Cliente. Retorna el listado de clientes 
@@ -37,7 +36,6 @@ public class ClienteDaoImpl implements IClienteDao {
 	
 	
 	@Override
-	@Transactional
 	public void save(Cliente cliente) {
 		//toma el objeto cliente y lo guarda dentro del contexto de persistencia (JPA). Va a sincronizar con
 		//la BD y hara el insert en la tabla, automaticamente
@@ -51,7 +49,6 @@ public class ClienteDaoImpl implements IClienteDao {
 	
 	
 	@Override
-	@Transactional
 	public void delete(Long id) {
 		/**
 		//obtenemos el cliente por id usando findOne
@@ -65,7 +62,6 @@ public class ClienteDaoImpl implements IClienteDao {
 	
 	
 	@Override
-	@Transactional(readOnly=true)
 	public Cliente findOne(Long id) {
 		//metodo find del JPA, pasamos el nombre de la clase con Cliente.class y el id
 		//Con esto JPA automaticamente va a la base de datos y nos da el objeto Cliente

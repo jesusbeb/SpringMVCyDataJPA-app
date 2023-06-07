@@ -14,6 +14,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
+import com.bolsadeideas.springboot.app.models.service.IClienteService;
 
 import jakarta.validation.Valid;
 
@@ -28,7 +29,8 @@ public class ClienteController {
 
 	//atributo del cliente DAO para realizar la consulta
 	@Autowired
-	private IClienteDao clienteDao;
+	//private IClienteDao clienteDao; //en lugar de inyectar de manera directa el clienteDao, inyectamos el clienteService
+	private IClienteService clienteService;
 	
 	
 	
@@ -39,7 +41,7 @@ public class ClienteController {
 	//Se importa la clase Model para pasar datos a la vista
 	public String listar(Model model) {
 		model.addAttribute("titulo", "Listado de clientes");
-		model.addAttribute("clientes", clienteDao.findAll());
+		model.addAttribute("clientes", clienteService.findAll());
 		return "listar";
 	}
 	
@@ -65,7 +67,7 @@ public class ClienteController {
 		//validamos que el id exista
 		if(id>0) {
 			//Buscamos en la base de datos usando el findOne de la clase clienteDao
-			cliente = clienteDao.findOne(id);
+			cliente = clienteService.findOne(id);
 		} else {
 			//si cliente es igual a cero, redirige a /listar
 			return "redirect:/listar";
@@ -93,7 +95,7 @@ public class ClienteController {
 			return "form";
 		}
 		
-		clienteDao.save(cliente);
+		clienteService.save(cliente);
 		//Despues de guardar cerramos la sesion
 		status.setComplete();
 		return "redirect:listar";
@@ -102,9 +104,10 @@ public class ClienteController {
 	
 	
 	@RequestMapping(value="/eliminar/{id}")
+	//Como argumento recibe el PathVariable con el id y el tipo de dato
 	public String eliminar(@PathVariable(value="id") Long id) {
-		if(id > 0) {
-			clienteDao.delete(id);
+		if(id > 0) { ////Si el id es mayor que cero
+			clienteService.delete(id);
 		}
 		return "redirect:/listar";
 	}
