@@ -16,4 +16,6 @@ public interface IClienteDao {
 	
 	//Metodo para guardar un cliente
 	public void save(Cliente cliente);
+	
+	public Cliente findOne(Long id);
 }

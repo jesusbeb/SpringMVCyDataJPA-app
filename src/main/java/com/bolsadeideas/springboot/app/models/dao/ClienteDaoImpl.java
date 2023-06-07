@@ -36,7 +36,18 @@ public class ClienteDaoImpl implements IClienteDao {
 	public void save(Cliente cliente) {
 		//toma el objeto cliente y lo guarda dentro del contexto de persistencia (JPA). Va a sincronizar con
 		//la BD y hara el insert en la tabla, automaticamente
-		em.persist(cliente); 
+		if(cliente.getId() != null && cliente.getId() >0 ) { //si el id es distinto de nulo y mayor que cero
+			em.merge(cliente); //actualiza los datos existentes
+		} else {
+			em.persist(cliente); //crea un nuevo cliente
+		}
+	}
+
+	@Override
+	public Cliente findOne(Long id) {
+		//metodo find del JPA, pasamos el nombre de la clase con Cliente.class y el id
+		//Con esto JPA automaticamente va a la base de datos y nos da el objeto Cliente
+		return em.find(Cliente.class, id);
 	}
 
 }

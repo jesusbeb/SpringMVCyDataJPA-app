@@ -34,7 +34,7 @@
 		</h1>
 
 		<!--Link para ir al formulario de crear cliente-->
-		<a th:href="@{/form}">Crear cliente</a>
+		<p><a th:href="@{/form}" class="btn btn-success btn-xs">Crear cliente</a></p>
 
 		<table class="table table-striped">
 			<thead>
@@ -44,6 +44,7 @@
 					<th>apellido</th>
 					<th>email</th>
 					<th>fecha</th>
+					<th>editar</th>
 				</tr>
 			</thead>
 
@@ -55,6 +56,8 @@
 					<td th:text="${cliente.apellido}"></td>
 					<td th:text="${cliente.email}"></td>
 					<td th:text="${cliente.createAt}"></td>
+					<!--url con la ruta hacia editar-->
+					<td><a th:href="@{/form/} + ${cliente.id}" th:text="'editar'" class="btn btn-primary btn-xs"></a></td>
 				</tr>
 			</tbody>
 
