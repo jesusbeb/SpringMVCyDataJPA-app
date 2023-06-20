@@ -26,7 +26,9 @@ public class ClienteServiceImpl implements IClienteService{
 	@Transactional(readOnly=true)
 	public List<Cliente> findAll() {
 		
-		return clienteDao.findAll();
+		//return clienteDao.findAll();
+		//findAll retorna un iterable por lo que se hace un cast a List<Cliente>
+		return (List<Cliente>) clienteDao.findAll();
 	}
 
 	@Override
@@ -40,13 +42,19 @@ public class ClienteServiceImpl implements IClienteService{
 	@Transactional(readOnly=true)
 	public Cliente findOne(Long id) {
 		
-		return clienteDao.findOne(id);
+		//return clienteDao.findOne(id);
+		//se cambia al metodo del Crud Repository llamado findById, el cual retorna un optional
+		//un optional envuelve el resultado de la consulta
+		//.orElse obtiene un cliente y si no lo encuentra crea uno nuevo o retorna un null, en este caso si no lo encuentra sera null
+		return clienteDao.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
 	public void delete(Long id) {
-		clienteDao.delete(id);
+		//clienteDao.delete(id);
+		//cambiaos al metodo del CrudRepository
+		clienteDao.deleteById(id);
 		
 	}
 

@@ -5,19 +5,21 @@
 
 package com.bolsadeideas.springboot.app.models.dao;
 
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
 
-public interface IClienteDao {
+//Se elimino ClienteDaoImpl
 
-	//metodo que retonar una lista de Cliente, que es la clase que esta mapeada a la tabla
-	public List<Cliente> findAll();
+//En el generic indicamos <tipo de dato, tipo de id>
+//no tenemos anotacion de @Component o Repository sin embargo en ClienteServiceImpl se inyecta con Autowired
+//ya que es una interface especial que hereda de CrudRepository y por debajo ya es un componente Spring
+public interface IClienteDao extends CrudRepository<Cliente, Long>{
+
+	/* Eliminamos los metodos que estaban contenidos, ya que ahora estan se estan implementado
+	 * por detras en CrudRepository
+	 * Se pueden tener metodos personalizados
+	 */
 	
-	//Metodo para guardar un cliente
-	public void save(Cliente cliente);
-	
-	public Cliente findOne(Long id);
-	
-	public void delete(Long id);
+
 }
