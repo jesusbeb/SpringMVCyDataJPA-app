@@ -16,7 +16,7 @@ import com.bolsadeideas.springboot.app.models.entity.Cliente;
 //ya que es una interface especial que hereda de CrudRepository y por debajo ya es un componente Spring
 public interface IClienteDao extends CrudRepository<Cliente, Long>{
 
-	/* Eliminamos los metodos que estaban contenidos, ya que ahora estan se estan implementado
+	/* Eliminamos los metodos que estaban contenidos, ya que ahora se estan implementado
 	 * por detras en CrudRepository
 	 * Se pueden tener metodos personalizados
 	 */
