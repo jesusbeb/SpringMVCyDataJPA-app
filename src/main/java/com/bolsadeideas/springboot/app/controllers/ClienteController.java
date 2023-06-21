@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
@@ -62,13 +63,18 @@ public class ClienteController {
 	
 	@RequestMapping(value="/form/{id}")
 	//Pasamos el id como argumento con PathVariable, el tipo de dato y la variable
-	public String editar(@PathVariable(value="id") Long id, Map<String, Object> model) {
+	public String editar(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 		Cliente cliente = null;
 		//validamos que el id exista
 		if(id>0) {
 			//Buscamos en la base de datos usando el findOne de la clase clienteDao
 			cliente = clienteService.findOne(id);
+			if(cliente == null) {
+				flash.addFlashAttribute("error", "El ID del cliente no existe en la BD :(");
+				return "redirect:/listar";
+			}
 		} else {
+			flash.addFlashAttribute("error", "El ID del cliente no puede ser cero :/");
 			//si cliente es igual a cero, redirige a /listar
 			return "redirect:/listar";
 		}
@@ -83,7 +89,8 @@ public class ClienteController {
 	@RequestMapping(value="/form", method=RequestMethod.POST)
 	//Este metodo recibe el objeto cliente del formulario @Valid como argumento habilita la validacion
 	//BindingResult siempre va enseguida del objeto del formulario
-	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, SessionStatus status) {
+	//Agreganis RedirectAtributes flash despues de model, para mostrar los mensajes flash
+	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status) {
 		
 		//si el BindingResult contiene errores
 		if(result.hasErrors()) {
@@ -94,10 +101,13 @@ public class ClienteController {
 			//volvemos a mostrar el formulario ahora con los mensajes de error para ser corregidos por el usuario
 			return "form";
 		}
+		//Validamos para saber que mensaje mostrar. Si el id es distinto de null es un cliente editado, si el id es null es un cliente nuevo
+		String mensajeFlash = (cliente.getId() != null)? "Cliente editado con exito :)" : "Cliente creado con exito :)";
 		
 		clienteService.save(cliente);
 		//Despues de guardar cerramos la sesion
 		status.setComplete();
+		flash.addFlashAttribute("success", mensajeFlash);
 		return "redirect:listar";
 	}
 	
@@ -105,9 +115,11 @@ public class ClienteController {
 	
 	@RequestMapping(value="/eliminar/{id}")
 	//Como argumento recibe el PathVariable con el id y el tipo de dato
-	public String eliminar(@PathVariable(value="id") Long id) {
+	//RedirectAttributes flash para mostrar mensajes flash
+	public String eliminar(@PathVariable(value="id") Long id, RedirectAttributes flash) {
 		if(id > 0) { ////Si el id es mayor que cero
 			clienteService.delete(id);
+			flash.addFlashAttribute("success", "Cliente eliminado con exito");
 		}
 		return "redirect:/listar";
 	}
