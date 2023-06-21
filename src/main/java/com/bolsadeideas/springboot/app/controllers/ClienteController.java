@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,6 +20,9 @@ import com.bolsadeideas.springboot.app.models.service.IClienteService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 //Marcamos y configuramos la clase como un controlador
 @Controller
@@ -40,9 +44,19 @@ public class ClienteController {
 	//si no se especifica el method, por defecto es GET, o sea que aqui se podria omitir
 	@RequestMapping(value="/listar", method=RequestMethod.GET)
 	//Se importa la clase Model para pasar datos a la vista
-	public String listar(Model model) {
+	//RequestParam obtiene la pagina actual mediante la ruta url. int page es el tipo y nombre del parametro
+	//name y defaultValue es cero porque estamos en la primera pagina
+	public String listar(@RequestParam(name="page", defaultValue="0") int page, Model model) {
+		
+		//creamos el objeto Pageable de forma estatica sin usar "new"
+		//en el metodo of se indica la cantidad de paginas que se quieren mostrar
+		Pageable pageRequest = PageRequest.of(page, 4);
+		
+		//invocamos el findAll
+		Page<Cliente> clientes = clienteService.findAll(pageRequest);
+		
 		model.addAttribute("titulo", "Listado de clientes");
-		model.addAttribute("clientes", clienteService.findAll());
+		model.addAttribute("clientes", clientes); 
 		return "listar";
 	}
 	

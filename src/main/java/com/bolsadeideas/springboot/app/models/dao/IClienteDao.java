@@ -5,6 +5,7 @@
 
 package com.bolsadeideas.springboot.app.models.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
@@ -14,7 +15,8 @@ import com.bolsadeideas.springboot.app.models.entity.Cliente;
 //En el generic indicamos <tipo de dato, tipo de id>
 //no tenemos anotacion de @Component o Repository sin embargo en ClienteServiceImpl se inyecta con Autowired
 //ya que es una interface especial que hereda de CrudRepository y por debajo ya es un componente Spring
-public interface IClienteDao extends CrudRepository<Cliente, Long>{
+//Ahora heredamos de JpaRepository para usar la paginación
+public interface IClienteDao extends JpaRepository<Cliente, Long>{
 
 	/* Eliminamos los metodos que estaban contenidos, ya que ahora se estan implementado
 	 * por detras en CrudRepository
