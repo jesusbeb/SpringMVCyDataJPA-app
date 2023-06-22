@@ -1,5 +1,9 @@
 package com.bolsadeideas.springboot.app.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
@@ -110,7 +115,8 @@ public class ClienteController {
 	//Este metodo recibe el objeto cliente del formulario @Valid como argumento habilita la validacion
 	//BindingResult siempre va enseguida del objeto del formulario
 	//Agreganis RedirectAtributes flash despues de model, para mostrar los mensajes flash
-	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status) {
+	//RequestParam con el nombre del parametro "file" con el tipo MultipartFile y le damos nombre "foto"
+	public String guardar(@Valid Cliente cliente, BindingResult result, Model model, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
 		
 		//si el BindingResult contiene errores
 		if(result.hasErrors()) {
@@ -120,6 +126,30 @@ public class ClienteController {
 			model.addAttribute("titulo", "Formulario de Cliente");
 			//volvemos a mostrar el formulario ahora con los mensajes de error para ser corregidos por el usuario
 			return "form";
+		}
+		
+		//si foto no esta vacio
+		if(!foto.isEmpty()) {
+			//objeto Path = pasamos la ruta donde guardara la imagen
+			Path directorioRecursos = Paths.get("src//main//resources//static/uploads");
+			//obtenemos el String del directorio y le llamamos rootPath
+			//Con el rootPath ya podemos concatenar el nombre del archivo para poder mover o escribir la imagen en este directorio
+			String rootPath = directorioRecursos.toFile().getAbsolutePath();
+			try {
+				//obtenemos los bytes de la imagen
+				byte[] bytes = foto.getBytes();
+				//Ruta completa con el nombre del archivo
+				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
+				//Creando y escribiendo la foto en el directorio uploads
+				Files.write(rutaCompleta, bytes);
+				flash.addFlashAttribute("info", "Has subido correctamente '" + foto.getOriginalFilename()+ "' :)");
+				
+				//Pasamos el nombre de la foto al cliente
+				cliente.setFoto(foto.getOriginalFilename());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		//Validamos para saber que mensaje mostrar. Si el id es distinto de null es un cliente editado, si el id es null es un cliente nuevo
 		String mensajeFlash = (cliente.getId() != null)? "Cliente editado con exito :)" : "Cliente creado con exito :)";
