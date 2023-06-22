@@ -11,41 +11,50 @@
 	<nav th:fragment="paginator">
 		<ul class="pagination">
 			
-			<li> <!--Para la primera pagina-->
+			 <!--Para la primera pagina-->
+			 <!--th:class pregunta si es primera pagina y desabilita la class page-item, si no la deja habilitada-->
+			<li class="page-item" th:class="${page.first? 'page-item disabled' : 'page-item'}">
 				<!--preguntamos si estamos en la primera pagina, entonces muestra el span-->
-				<span th:if="${page.first}">primera</span>
+				<span th:if="${page.first}" class="page-link">primera</span>
 				<!--Pregunta si no es la primera pagina, entonces muestra el link hacia la primera pagina con th:href-->
-				<a th:if="${not page.first}" th:href="@{${page.url}(page=0)}">primera</a>
+				<a th:if="${not page.first}" th:href="@{${page.url}(page=0)}" class="page-link">primera</a>
 			</li>
 			
-			<li> <!--Para una pagina anterior-->
-				<!--Si no tiene pagina anterior mostramos el span-->
-				<span th:if="${not page.hasPrevious}">anterior</span>
+			 <!--Para una pagina anterior-->
+			<li class="page-item" th:class="${not page.hasPrevious? 'page-item disabled' : 'page-item'}">
+				<!--Si no tiene pagina anterior mostramos el span. &laquo; es el simbolo de flecha hacia atras-->
+				<span th:if="${not page.hasPrevious}" class="page-link">&laquo;</span>
 				<!--Si tiene pagina anterior mostramos el link-->
-				<a th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}">anterior</a>
+				<a th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}" class="page-link">&laquo;</a>
 			</li>
 			
 			<!--Para cada una de las paginas-->
 			<!--each, por cada item en page.paginas (listado de paginas)-->
-			<li th:each="item : ${page.paginas}">
+			<!--th:class pregunta si es pagina actual, si es actual deja la class como activa para diferencial del resto, si no es la pagina actual solo se mantiene el page-item-->
+			<li th:each="item : ${page.paginas}" class="page-item" th:class="${item.actual? 'page-item active' : 'page-item'}">
 				<!--Mostramos las paginas-->
 				<!--Si estamos en la pagina actual se muestra el span con el numero de la pagina. item es un objeto de PageItem y tiene la variable booleana "actual"-->
-				<span th:if="${item.actual}" th:text="${item.numero}"></span>
+				<span th:if="${item.actual}" th:text="${item.numero}" class="page-link"></span>
 				<!--Si no estamos en la pagina actual muestra un link-->
-				<a th:if="${not item.actual}" th:href="@{${page.url}(page=${item.numero-1})}" th:text="${item.numero}"></a>
+				<a th:if="${not item.actual}" th:href="@{${page.url}(page=${item.numero-1})}" th:text="${item.numero}" class="page-link"></a>
 			</li>
 			
-			<li> <!--Para pagina siguiente-->
-				<span th:if="${not page.hasNext}">siguiente</span>
-				<a th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}">siguiente</a>
+			<!--Para pagina siguiente-->
+			<li class="page-item" th:class="${not page.hasNext? 'page-item disabled' : 'page-item'}"> 
+				<!--&raquo; es el simbolo de flecha hacia adelante-->
+				<span th:if="${not page.hasNext}" class="page-link">&raquo;</span>
+				<a th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}" class="page-link">&raquo;</a>
 			</li>
 			
-			<li> <!--Para la pagina final-->
+			<!--Para la pagina final-->
+			<!--th class pregunta si es la ultima pagina para desabilitar el class, si no es ultima lo habilita-->
+			<li class="page-item" th:class="${page.last? 'page-item disabled' : 'page-item'}"> 
 				<!--Preguntamos si estamos en la ultima pagina, entonces mostramos el span-->
-				<span th:if="${page.last}">ultima</span>
+				<span th:if="${page.last}" class="page-link">&Uacute;ltima</span>
 				<!--Preguntamos si no estamos en la ultima pagina, entonces mostramos el link a la ultima pagina-->
-				<a th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}">ultima</a>
+				<a th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}" class="page-link">ultima</a>
 			</li>
+			
 		</ul>
 	</nav>
 	</body>	
