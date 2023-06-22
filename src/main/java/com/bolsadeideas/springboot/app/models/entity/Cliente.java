@@ -52,6 +52,8 @@ public class Cliente implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd") //patron de fecha que se usara
 	@NotNull //validacion para objeto diferente de String
 	private Date createAt;
+	
+	private String foto;
 
 	//atributo que se genera al heredar de Serializable. En JPA serializamos cuando guardamos un objeto en 
 	//la sesion http es recomendable siempre implementar serializable para las clases Entity con JPA
@@ -105,8 +107,17 @@ public class Cliente implements Serializable {
 		this.createAt = createAt;
 	}
 
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	
 
 }

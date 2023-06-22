@@ -31,8 +31,9 @@
 			Para crear formularios en thymeleaf, se usan dos etiquetas th:action que contiene la url hacia la ruta que procesa el formulario
 			th:object contiene el objeto que se esta pasando
 			metodo post ya que cuando se da clic en submit se va al metodo guardar de tipo POST
+			Agregamos el atributo enctype que es una codificacion que permite enviar archivos como datos en el request en una peticion http (esto es para la foto)
 		-->
-				<form th:action="@{/form}" th:object="${cliente}" method="post">
+				<form th:action="@{/form}" th:object="${cliente}" method="post" enctype="multipart/form-data">
 
 					<!--Mapeamos cada campo del formulario con cada atributo de la clase Cliente-->
 
