@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/layout :: head"></head>
+
+<header th:replace="layout/layout :: header"></header>
+
+<div class="container py-4">
+
+	<!--Vista de detalle para mostrar la imagen del cliente-->
+	<div class="card bg-light">
+		<div class="card-header" th:text="${titulo}"></div>
+		<div class="card-body">
+
+			<!--th:src accede al directorio donde se almacena la imagen, se le concatena el nombre de la imagen que se obtiene a traves del objeto cliente
+		    con el atributo if de thymeleaf validamos si existe la foto, usamos la clase helper strings con el metodo length para calcular el largo del 
+		    nombre de la foto, si es mayor que cero, existe. Para llamar clases helper usamos #
+			-->
+			<img th:if="${#strings.length(cliente.foto) > 0}" class="img-thumbnail rounded float-left"
+				style="max-width: 25%;" th:src="@{'/uploads/' + ${cliente.foto}}" 
+				th:alt="${cliente.foto}" />
+
+			<!--Al lado de la foto mostramos los datos del cliente en una ul-->
+			<ul class="list-group">
+				<li class="list-group-item" th:text="${cliente.nombre}"></li>
+				<li class="list-group-item" th:text="${cliente.apellido}"></li>
+				<li class="list-group-item" th:text="${cliente.email}"></li>
+				<li class="list-group-item" th:text="${cliente.createAt}"></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<body>
+
+</body>
+
+</html>

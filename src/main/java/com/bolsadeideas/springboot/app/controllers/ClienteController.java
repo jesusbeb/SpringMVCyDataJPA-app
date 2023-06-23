@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +44,32 @@ public class ClienteController {
 	@Autowired
 	//private IClienteDao clienteDao; //en lugar de inyectar de manera directa el clienteDao, inyectamos el clienteService
 	private IClienteService clienteService;
+	
+	
+	/////Metodo para ver el detalle y la foto del cliente
+	@GetMapping(value="/ver/{id}")
+	//Pasamos por argumento el PathVariable con el valor del id que es de tipo Long y nombre id
+	//Pasamos por argumento Map para pasar datos a la vista
+	//Pasamos por argumento RedirectAttributes para mensajes de flash
+	public String ver(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+		
+		//obtenemos el cliente por id
+		Cliente cliente = clienteService.findOne(id);
+		//si es null mostramos mensaje flash y redirigimos al listar
+		if(cliente==null) {
+			flash.addFlashAttribute("error", "El cliente no existe en la BD :(");
+			return "redirect:/listar";
+		}
+		
+		//si no es null pasamos el cliente a la vista junto con la foto
+		model.put("cliente", cliente);
+		//pasamos el titulo
+		model.put("titulo", "Detalle cliente: " + cliente.getNombre());
+		
+		//Pasamos el nombre de la vista
+		return "ver";
+	}
+	//////Fin del metodo para ver el detalle
 	
 	
 	
@@ -80,7 +107,7 @@ public class ClienteController {
 
 		Cliente cliente = new Cliente();
 		model.put("cliente", cliente); //pasamos el objeto cliente a la vista
-		model.put("titulo", "Formulario de Cliente");
+		model.put("titulo", "Crear Cliente");
 		return "form";
 	}
 	
