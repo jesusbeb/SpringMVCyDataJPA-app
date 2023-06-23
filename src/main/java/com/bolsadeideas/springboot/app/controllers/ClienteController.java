@@ -157,11 +157,9 @@ public class ClienteController {
 		
 		//si foto no esta vacio
 		if(!foto.isEmpty()) {
-			//objeto Path = pasamos la ruta donde guardara la imagen
-			Path directorioRecursos = Paths.get("src//main//resources//static/uploads");
-			//obtenemos el String del directorio y le llamamos rootPath
-			//Con el rootPath ya podemos concatenar el nombre del archivo para poder mover o escribir la imagen en este directorio
-			String rootPath = directorioRecursos.toFile().getAbsolutePath();
+			//Guardamos en una ruta externa al proyecto que es lo recomendado
+			//Se tiene que crear estos folders manualmente
+			String rootPath = "C://Temp/uploads";
 			try {
 				//obtenemos los bytes de la imagen
 				byte[] bytes = foto.getBytes();
