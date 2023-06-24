@@ -5,7 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +47,9 @@ public class ClienteController {
 	@Autowired
 	//private IClienteDao clienteDao; //en lugar de inyectar de manera directa el clienteDao, inyectamos el clienteService
 	private IClienteService clienteService;
+	
+	//atributo logger para hacer un debug de los nombres de directorio y los muestre en la consola
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	
 	/////Metodo para ver el detalle y la foto del cliente
@@ -157,16 +163,24 @@ public class ClienteController {
 		
 		//si foto no esta vacio
 		if(!foto.isEmpty()) {
-			//Guardamos en una ruta externa al proyecto que es lo recomendado
-			//Se tiene que crear estos folders manualmente
-			String rootPath = "C://Temp/uploads";
+			//el nombre del archivo (uniqueFileName) es igual a la clase Universaly Unique Identify, con un identificador
+			//unico random, lo pasamos a string y le concatenamos _ mas el nombre original del archivo
+			String uniqueFileName = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
+			//creamos un path y le damos la ruta, la carpeta "uploads" estara en la raiz del proyecto (la creamos manualmente, al mismo nivel que "src" y "target")
+			//se concantena el nombre del archivo usando resolve que se encarga de forma automatica anexar el nombre original del archivo
+			Path rootPath = Paths.get("uploads").resolve(uniqueFileName);
+			
+			//Agregamos la ruta absoluta al directorio
+			Path rootAbsolutePath = rootPath.toAbsolutePath();
+			
+			//Debug de los nombres de directorio. Esto se muestra en la consola en tiempo de ejecucion
+			log.info("rootPath: " + rootPath); //Path relativo al proyecto
+			log.info("rootAbsolutePath: " + rootAbsolutePath); //Path absoluto
+			
 			try {
-				//obtenemos los bytes de la imagen
-				byte[] bytes = foto.getBytes();
-				//Ruta completa con el nombre del archivo
-				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-				//Creando y escribiendo la foto en el directorio uploads
-				Files.write(rutaCompleta, bytes);
+				//el metodo copy obtiene el inputStream de la foto para copiar el archivo al nuevo directorio (ruta absoluta)
+				Files.copy(foto.getInputStream(), rootAbsolutePath);
+				
 				flash.addFlashAttribute("info", "Has subido correctamente '" + foto.getOriginalFilename()+ "' :)");
 				
 				//Pasamos el nombre de la foto al cliente
