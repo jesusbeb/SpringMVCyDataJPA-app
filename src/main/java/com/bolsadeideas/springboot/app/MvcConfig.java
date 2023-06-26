@@ -11,11 +11,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
 	//atributo log opcional
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	/*
+	 * Comentamos el siguiente codigo ya que se cargaran las imagenes de forma programatica con codigo Java a
+	 * traves dek recurso Input Stream Resource, un String de entrada que contiene toda la informacion de la imagen
+	 * en los bytes
+	 */
+	/*
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// Sobreescribimos el metodo addResourceHandlers para agregar directorios recursos a nuestro proyecto
@@ -30,7 +38,5 @@ public class MvcConfig implements WebMvcConfigurer {
 		//doble asterisco para mapear al nombre de la imagen y se pueda cargar
 		registry.addResourceHandler("/uploads/**")
 		.addResourceLocations("file:/C:/Temp/uploads/"); //directorio fisico
-	}
-
-	
+	}*/
 }

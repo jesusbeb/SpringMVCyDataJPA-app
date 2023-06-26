@@ -1,15 +1,25 @@
 package com.bolsadeideas.springboot.app.controllers;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,17 +33,10 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
 import com.bolsadeideas.springboot.app.models.service.IClienteService;
 import com.bolsadeideas.springboot.app.util.paginator.PageRender;
 
-
-import jakarta.validation.Valid;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 //Marcamos y configuramos la clase como un controlador
 @Controller
@@ -50,6 +53,47 @@ public class ClienteController {
 	
 	//atributo logger para hacer un debug de los nombres de directorio y los muestre en la consola
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	
+	/* Se elimino el codigo en MvcConfig para crear este metodo handler que se encarga de recibir una imagen
+	 * como parametro, como path variable, la convierte a un recurso (inputStream) y la carga en la respuesta http
+	 * como un ResponseEntiy
+	 */
+	//Metodo del tipo get con una url, El punto y mas permite que Spring no borre o trunque la extension del archivo (.jpg, png, etc.)
+	@GetMapping(value="/uploads/{filename:.+}")
+	//El retorno es un ResponseEntity del tipo generico Resource. Como argumento al metodo se pasa el Path Variable, tipo y nombre 
+	public ResponseEntity<Resource> verFoto(@PathVariable String filename){
+		//convertimos el filename en un path absoluto para poder cargar la imagen
+		//Paths.get obtiene la primera parte del path, en este caso es la carpeta "uploads"
+		//.resolv concatena otro path al path principal, este otro path es el nombre del archivo (agrega la diagonal)
+		//.toAbsolutePath convierte todo a un path absoluto que incluye la ruta completa desde la raiz
+		Path pathFoto = Paths.get("uploads").resolve(filename).toAbsolutePath();
+		log.info("pathFoto: " + pathFoto); //nos muestra en la consola el pathFoto
+		
+		//creamos el recurso nulo
+		Resource recurso = null;
+				
+		try {
+			//inicializamos el recurso. Nos pide crear una excepcion por url mal formada
+			recurso = new UrlResource(pathFoto.toUri());
+			//Si el recurso no existe y tamposo se puede leer
+			if(!recurso.exists() && !recurso.isReadable()) {
+				//lanzamos una excepcion
+				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+			}
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//retornamos la respuesta
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +  recurso.getFilename() +"\"")
+				.body(recurso);		
+	}
+	
+
+	
 	
 	
 	/////Metodo para ver el detalle y la foto del cliente
