@@ -1,5 +1,6 @@
 package com.bolsadeideas.springboot.app.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -54,6 +55,11 @@ public class ClienteController {
 	//atributo logger para hacer un debug de los nombres de directorio y los muestre en la consola
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
+	private final static String UPLOADS_FOLDER = "uploads";
+	
+	
+	
+	
 	
 	/* Se elimino el codigo en MvcConfig para crear este metodo handler que se encarga de recibir una imagen
 	 * como parametro, como path variable, la convierte a un recurso (inputStream) y la carga en la respuesta http
@@ -77,16 +83,17 @@ public class ClienteController {
 			//inicializamos el recurso. Nos pide crear una excepcion por url mal formada
 			recurso = new UrlResource(pathFoto.toUri());
 			//Si el recurso no existe y tamposo se puede leer
-			if(!recurso.exists() && !recurso.isReadable()) {
+			if(!recurso.exists() || !recurso.isReadable()) {
 				//lanzamos una excepcion
-				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+				throw new RuntimeException("Error: no se puede cargar la imagen: :(" + pathFoto.toString());
 			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block	
 			e.printStackTrace();
 		}
 		
 		//retornamos la respuesta
+		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +  recurso.getFilename() +"\"")
 				.body(recurso);		
@@ -123,6 +130,8 @@ public class ClienteController {
 	
 	
 	
+	
+	
 	//Metodo para listar los clientes
 	//RequestMapping para validar, en value damos la ruta, method es el tipo de peticion, en este caso GET
 	//si no se especifica el method, por defecto es GET, o sea que aqui se podria omitir
@@ -150,6 +159,8 @@ public class ClienteController {
 	
 	
 	
+	
+	
 	//Metodo Request del tipo get, el segundo parametro que seria .GET lo omitimos que por defecto lo tiene
 	@RequestMapping(value="/form")
 	//Pasamos un mapa de java, nombre del parametro es del tipo String y el objeto que se guarda es un Object (objeto generico)
@@ -160,6 +171,8 @@ public class ClienteController {
 		model.put("titulo", "Crear Cliente");
 		return "form";
 	}
+	
+	
 	
 	
 	
@@ -187,6 +200,8 @@ public class ClienteController {
 	
 	
 	
+	
+	
 	//Metodo que procesa los datos del form. Tipo de metodo es POST
 	@RequestMapping(value="/form", method=RequestMethod.POST)
 	//Este metodo recibe el objeto cliente del formulario @Valid como argumento habilita la validacion
@@ -207,9 +222,29 @@ public class ClienteController {
 		
 		//si foto no esta vacio
 		if(!foto.isEmpty()) {
+			
+			//si el usuario edita y reemplazara la foto, la foto reemplazada se elimina
+			//si el cliente existe, es mayor que cero, que tenga foto, que la foto sea mayor que cero
+			if(cliente.getId() != null 
+					&& cliente.getId() > 0
+					&& cliente.getFoto() != null
+					&& cliente.getFoto().length() >0 ) {
+				
+				//codigo copiado del metodo eliminar
+				Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();
+				File archivo = rootPath.toFile();
+				
+				if(archivo.exists() && archivo.canRead()) {
+					archivo.delete();
+					
+				}
+			}
+			
 			//el nombre del archivo (uniqueFileName) es igual a la clase Universaly Unique Identify, con un identificador
 			//unico random, lo pasamos a string y le concatenamos _ mas el nombre original del archivo
+			//esto es para que fotos con el mismo nombre, no se reemplazen
 			String uniqueFileName = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename();
+			//String uniqueFileName = foto.getOriginalFilename();
 			//creamos un path y le damos la ruta, la carpeta "uploads" estara en la raiz del proyecto (la creamos manualmente, al mismo nivel que "src" y "target")
 			//se concantena el nombre del archivo usando resolve que se encarga de forma automatica anexar el nombre original del archivo
 			Path rootPath = Paths.get("uploads").resolve(uniqueFileName);
@@ -221,14 +256,15 @@ public class ClienteController {
 			log.info("rootPath: " + rootPath); //Path relativo al proyecto
 			log.info("rootAbsolutePath: " + rootAbsolutePath); //Path absoluto
 			
-			try {
+			try { 
 				//el metodo copy obtiene el inputStream de la foto para copiar el archivo al nuevo directorio (ruta absoluta)
 				Files.copy(foto.getInputStream(), rootAbsolutePath);
 				
 				flash.addFlashAttribute("info", "Has subido correctamente '" + foto.getOriginalFilename()+ "' :)");
 				
 				//Pasamos el nombre de la foto al cliente
-				cliente.setFoto(foto.getOriginalFilename());
+				//cliente.setFoto(foto.getOriginalFilename());
+				cliente.setFoto(uniqueFileName);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -246,15 +282,32 @@ public class ClienteController {
 	
 	
 	
+	
+	
 	@RequestMapping(value="/eliminar/{id}")
 	//Como argumento recibe el PathVariable con el id y el tipo de dato
 	//RedirectAttributes flash para mostrar mensajes flash
 	public String eliminar(@PathVariable(value="id") Long id, RedirectAttributes flash) {
 		if(id > 0) { ////Si el id es mayor que cero
+			
+			//obtenemos el objeto cliente antes de eliminarlo de la BD
+			Cliente cliente = clienteService.findOne(id);
+			
 			clienteService.delete(id);
 			flash.addFlashAttribute("success", "Cliente eliminado con exito");
+			
+			//obtenemos la ruta absoluta de la foto 
+			Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();
+			//obtenemos el file, de esta manera ya podemos eliminar
+			File archivo = rootPath.toFile();
+			
+			//validamos si el archivo existe y se pueda leer
+			if(archivo.exists() && archivo.canRead()) {
+				if(archivo.delete()) {
+					flash.addFlashAttribute("info", "Foto" + cliente.getFoto() + " eliminada con exito :)");
+				}
+			}
 		}
 		return "redirect:/listar";
-	}
-	
+	}	
 }

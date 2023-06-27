@@ -17,8 +17,7 @@
 		    nombre de la foto, si es mayor que cero, existe. Para llamar clases helper usamos #
 			-->
 			<img th:if="${#strings.length(cliente.foto) > 0}" class="img-thumbnail rounded float-left"
-				style="max-width: 25%;" th:src="@{'/uploads/' + ${cliente.foto}}" 
-				th:alt="${cliente.foto}" />
+				style="max-width: 25%;" th:src="@{ '/uploads/' + ${cliente.foto} }" th:alt="${cliente.foto}" />
 
 			<!--Al lado de la foto mostramos los datos del cliente en una ul-->
 			<ul class="list-group">
@@ -30,6 +29,8 @@
 		</div>
 	</div>
 </div>
+
+<footer th:replace="layout/layout :: footer"></footer>
 
 <body>
 

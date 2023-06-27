@@ -20,7 +20,7 @@ public class MvcConfig implements WebMvcConfigurer {
 	
 	/*
 	 * Comentamos el siguiente codigo ya que se cargaran las imagenes de forma programatica con codigo Java a
-	 * traves dek recurso Input Stream Resource, un String de entrada que contiene toda la informacion de la imagen
+	 * traves del recurso Input Stream Resource, un String de entrada que contiene toda la informacion de la imagen
 	 * en los bytes
 	 */
 	/*
@@ -38,5 +38,6 @@ public class MvcConfig implements WebMvcConfigurer {
 		//doble asterisco para mapear al nombre de la imagen y se pueda cargar
 		registry.addResourceHandler("/uploads/**")
 		.addResourceLocations("file:/C:/Temp/uploads/"); //directorio fisico
-	}*/
+	}
+	*/
 }
