@@ -22,7 +22,6 @@ public class MvcConfig implements WebMvcConfigurer {
 	 * Comentamos el siguiente codigo ya que se cargaran las imagenes de forma programatica con codigo Java a
 	 * traves del recurso Input Stream Resource, un String de entrada que contiene toda la informacion de la imagen
 	 * en los bytes
-	 */
 	/*
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
