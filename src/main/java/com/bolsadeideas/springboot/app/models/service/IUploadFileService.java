@@ -21,4 +21,8 @@ public interface IUploadFileService {
 	public String copy(MultipartFile file) throws IOException; //copia la foto original al directorio y la renombra
 	
 	public boolean delete(String filename); //retorna un boolean para saber si se elimino o no
+	
+	public void deleteAll(); //Borra la carpeta uploads
+	
+	public void init() throws IOException; //Crea la carpeta uploads
 }

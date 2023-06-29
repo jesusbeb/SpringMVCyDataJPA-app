@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -98,6 +99,20 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		// .toAbsolutePath convierte todo a un path absoluto que incluye la ruta
 		// completa desde la raiz, para poder cargar la imagen
 		return Paths.get(UPLOADS_FOLDER).resolve(filename).toAbsolutePath();
+	}
+
+	//Borra la carpeta uploads
+	@Override
+	public void deleteAll() {
+		//Usamos la clase FileSystem... con su metodo deleteRecursively y le pasamos la ruta a eliminar
+		FileSystemUtils.deleteRecursively(Paths.get(UPLOADS_FOLDER).toFile());
+	}
+
+	//Crea la carpeta uploads
+	@Override
+	public void init() throws IOException {
+		//Usamos la clase Files con su metodo createDirectories y le pasamos la ruta y carpeta a crear
+		Files.createDirectories(Paths.get(UPLOADS_FOLDER));
 	}
 
 }
