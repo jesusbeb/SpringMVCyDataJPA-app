@@ -1,15 +1,21 @@
 package com.bolsadeideas.springboot.app.models.entity;
 
 import java.io.Serializable;
+
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -53,6 +59,21 @@ public class Cliente implements Serializable {
 	@NotNull //validacion para objeto diferente de String
 	private Date createAt;
 	
+	//Un cliente puede tener muchas facturas por lo tanto se usa un List
+	//mappedBy se le asigna el atributo de la otra clase a la que se relaciona, hace que sea bidireccional y
+	//de forma automatica crea la llave foranea cliente id en la tabla facturas para relacionar ambas tablas en la BD
+	//fetch es carga perezosa
+	//CascadeType.ALL todas las consultas se haran en cadena, en cascada. Cascada muestra o elimina con sus elementos hijos
+	@OneToMany(mappedBy="cliente", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<Factura> facturas;
+	
+	//Constructor que inicializa el ArrayList
+	public Cliente() {
+		facturas = new ArrayList<Factura>();
+	}
+
+
+
 	private String foto;
 
 	//atributo que se genera al heredar de Serializable. En JPA serializamos cuando guardamos un objeto en 
@@ -114,7 +135,23 @@ public class Cliente implements Serializable {
 	public void setFoto(String foto) {
 		this.foto = foto;
 	}
+	
+	
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
 
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
+	}
+
+	//Recibe una factura y la agrega al List una por una
+	public void addFactura(Factura factura) {
+		facturas.add(factura);
+	}
+	
+	
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
