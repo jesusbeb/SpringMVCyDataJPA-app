@@ -2,14 +2,19 @@ package com.bolsadeideas.springboot.app.models.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -36,7 +41,19 @@ public class Factura implements Serializable {
 	//LAZY solo realiza la consulta cuando se le llama
 	@ManyToOne(fetch=FetchType.LAZY)
 	private Cliente cliente;
+	
+	//Atributo Lista de ItemFactura
+	//Uno a Muchos. Una factura a muchos clientes
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="factura_id") //Campo o llave foranea en la tabla facturas_items
+	private List<ItemFactura> items;
 
+
+	//Constructor
+	public Factura() {
+		this.items = new ArrayList<ItemFactura>();
+	}
+	
 	//Metodo que genera la fecha automaticamente
 	@PrePersist
 	public void prePersist() {
@@ -83,8 +100,23 @@ public class Factura implements Serializable {
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
-
 	
+	public List<ItemFactura> getItems() {
+		return items;
+	}
+
+	public void setItems(List<ItemFactura> items) {
+		this.items = items;
+	}
+	
+	//Metodo que agrega los items factura
+	public void addItemFactura(ItemFactura item) {
+		this.items.add(item);
+	}
+
+
+
+
 	//como se implementa de serializable tenemos que agregar este atributo (lo dejamos abajo ya que es un atributo interno)
 	private static final long serialVersionUID = 1L;
 }
