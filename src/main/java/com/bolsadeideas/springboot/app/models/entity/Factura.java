@@ -114,7 +114,17 @@ public class Factura implements Serializable {
 		this.items.add(item);
 	}
 
-
+	//Obtenemos el costo total de todos los productos en la factura
+	public Double getTotal() {
+		Double total = 0.0;
+		
+		int size = items.size();
+		
+		for(int i=0 ; i<size; i++) {
+			total += items.get(i).calcularImporte(); //sumamos el importe de cada item
+		}
+		return total;
+	}
 
 
 	//como se implementa de serializable tenemos que agregar este atributo (lo dejamos abajo ya que es un atributo interno)
