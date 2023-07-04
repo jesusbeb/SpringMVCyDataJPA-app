@@ -11,6 +11,11 @@
 	<div class="card bg-light">
 		<div class="card-header" th:text="${titulo}"></div>
 		<div class="card-body">
+			
+			<!--Link para crear factura-->
+			<h4 class="card-title">
+				<a class="btn btn-primary btn-xs" th:href="@{'/factura/form/' + ${cliente.id} }" th:text="'crear factura'"></a>
+			</h4>
 
 			<!--th:src accede al directorio donde se almacena la imagen, se le concatena el nombre de la imagen que se obtiene a traves del objeto cliente
 		    con el atributo if de thymeleaf validamos si existe la foto, usamos la clase helper strings con el metodo length para calcular el largo del 

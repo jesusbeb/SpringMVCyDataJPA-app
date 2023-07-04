@@ -9,7 +9,11 @@
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
-				<h4 class="card-title"></h4>
+				
+				<!--Boton o link con una flecha y el texto volver-->
+				<h4 class="card-title">
+					<a class="btn btn-light btn-xs" th:href="@{'/ver/' + ${factura.cliente.id} }" th:text="'&laquo; volver'"></a>
+				</h4>
 
 				<!--el action se va a la url /factura/form, mapeado al objeto tipo factura, usando el metodo post-->
 				<form th:action="@{/factura/form/}" th:object="${factura}" method="post">
