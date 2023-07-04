@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity //clase de persistencia
-@Table(name="facuras_items") //mapeamos a la tabla
+@Table(name="facturas_items") //mapeamos a la tabla
 public class ItemFactura implements Serializable{
 
 	@Id
@@ -45,7 +45,7 @@ public class ItemFactura implements Serializable{
 	}
 
 	public Double calcularImporte() {
-		return cantidad.doubleValue() * producto.getPrecio(); //cantidad convertida a longValue
+		return cantidad.doubleValue() * producto.getPrecio(); // cantidad por precio. cantidad convertida a longValue
 	}
 
 
