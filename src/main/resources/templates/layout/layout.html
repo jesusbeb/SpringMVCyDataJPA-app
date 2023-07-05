@@ -7,6 +7,8 @@
 	<title th:text="'Spring Boot: MVC + Thymeleaf + Data JPA - ' + ${titulo}"></title>
 	<!--Agregamos la hoja de estilo bootstrap-->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<!--Agregamos la hoja de estilos de jquery-->
+	<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
 </head>
 
 
@@ -63,6 +65,8 @@
 		<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
 		<script th:src="@{/js/popper.min.js}"></script>
 		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<!--Agregamos la libreria de jquery-->
+		<script th:src="@{/js/jquery-ui.min.js}"></script>
 	</footer>
 
 

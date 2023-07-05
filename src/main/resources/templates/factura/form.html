@@ -40,6 +40,21 @@
 							<textarea th:field="*{observacion}" class="form-control"></textarea>
 						</div>
 					</div>
+					
+					<!--
+					Descargamos de jqueryui.com la version estable, descomprimimos y copiamos jquery-ui.min.css y jquery-ui.min.js
+					y lo pegamos dentro del proyecto static/js
+					-->
+					<!--Campo autocomplete para buscar el producto-->
+					<div class="form-group row">
+						<label for= "buscar_producto" class="col-sm-2 col-form-label" 
+							th:text="'Buscar producto'"></label>
+						<div class="col-sm-6">
+							<!--Buscar producto del tipo text va a realizar una peticion asincrona ajax con jquery y
+							va a tener el name y el id como buscar_producto-->
+							<input type="text" name="buscar_producto" id="buscar_producto" class="form-control" />
+						</div>
+					</div>
 
 					<div class="form-group row">
 						<div class="col-sm-6">
@@ -51,7 +66,10 @@
 			</div>
 		</div>
 	</div>
-
+	
+	<footer th:replace="layout/layout :: footer"></footer>
+	<!--Agregamos el fragment que nombramos javascript-->
+	<script th:replace="factura/js/autocomplete-productos :: javascript"></script>
 </body>
 
 </html>

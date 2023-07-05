@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+	Plantilla o fragment para el javascript
+-->
+
+<body>
+
+	<!--script del tipo text/javascript y un fragment que nombraremos javascript-->
+	<script type="text/javascript" th:fragment="javascript">
+
+		//Nos aseguramos que el documento html este completamente cargado, usando el metodo ready
+		//dentro del ready una funcion e implementamos el autocomplete que esta asociado al campo con el id buscar_producto
+		$(document).ready(function () {
+			$("#buscar_producto").autocomplete({
+				//recibe un objeto que contiene dos metodos: el metodo source que se encarga de realizar la peticion ajax
+				source: function (request, response) {
+					//invocamos el metodo ajax
+					$ajax({
+						//pasamos un objeto con todos los parametros y la implementacion del metodo success para manejar la respuesta
+						//maping url hacia un metodo handler del controlador que maneja la peticion ajax. 
+						//+ parametro variable a la ruta que contiene el texto que estamos escribiendo en el campo de texto.
+						//Dentro del parametro term del objeto request se almacena lo que se esta escribiendo
+						url: "/factura/cargar-productos/" + request.term, 
+						dataType: "json", //tipo de dato json
+						//Opcionalmente pasamos el request.term como request.param, en un arreglo
+						//en este arreglo se puede guardar cualquier tipó de parametro que queramos enviar
+						//post o get, en este caso sera get
+						data: {
+							term: request.term //le damos el nombre de term
+						},
+						//funcion success que recibe los datos en formato json y se pasa al autocomplete
+						success: function (data) {
+							//pasamos la respuesta al autocomplete usando response con el metodo map, el cual se encarga 
+							//de realizar un proceso por cada elemento del arreglo (data). Como primer parametro le
+							//pasamos el arreglo y como segundo parametro una funcion anonima que contiene
+							//el valor de cada elemento (item) y retornara el id, nombre y precio
+							response($.map(data, function (item) {
+								return {
+									value: item.id,
+									label: item.nombre,
+									precio: item.precio
+								};
+							}));
+						},
+					});
+				},
+				//implementamos el segundo metodo select que nos permite realizar cualquier tipo de tarea al seleccionar un elemento
+				//del autocomplete, por ejemplo al seleccionar y crear la linea de la factura o pasar el elemento seleccionado como valor al campo buscar producto
+				//en este caso tomaremos el label del producto y los mostraremos en el campo buscar producto
+				select: function(event, ui){
+					//al campo buscar producto le pasamos el valor que es la etiqueta del producto
+					$("#buscar_producto").val(ui.item.label);
+					
+					return false; //retornamos false
+				}
+
+			});
+		}
+		);
+
+	</script>
+
+</body>
+
+</html>
