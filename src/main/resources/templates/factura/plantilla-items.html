@@ -1,0 +1,31 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+	Plantilla para los items de la factura
+-->
+
+<body>
+
+<!--class d-none es una plantilla oculta-->
+<table th:fragment="itemsFactura" class="d-none">
+	
+	<tbody id="plantillaItemsFactura">
+		<tr id="row_{ID}"> <!--id de cada linea de factura. {ID} se reemplazara por el ID real del producto-->
+			<!--el id sera oculto. name es nombre del parametro item_id, es un arreglo ya que una factura puede tener varias lineas-->
+			<td class="d-none"><input type="hidden" value="{ID}" name="item_id[]"></td>
+			<!--nombre del producto. {NOMBRE} se reemplazara con el nombre real del producto que se obtendra con el autocomplete-->
+			<td>{NOMBRE}</td>
+			<td>{PRECIO}</td>
+			<!--campo cantidad que es un arreglo de las cantidades de cada linea de factura-->
+			<td><input type="number" value="1" name="cantidad[]" 
+				id="cantidad_{ID}" class="form-control col-sm-4" /></td>
+		</tr>
+	</tbody>
+	
+</table>
+
+</body>
+
+</html>
+ 
