@@ -17,7 +17,7 @@
 				//recibe un objeto que contiene dos metodos: el metodo source que se encarga de realizar la peticion ajax
 				source: function (request, response) {
 					//invocamos el metodo ajax
-					$ajax({
+					$.ajax({
 						//pasamos un objeto con todos los parametros y la implementacion del metodo success para manejar la respuesta
 						//maping url hacia un metodo handler del controlador que maneja la peticion ajax. 
 						//+ parametro variable a la ruta que contiene el texto que estamos escribiendo en el campo de texto.
@@ -40,7 +40,7 @@
 								return {
 									value: item.id,
 									label: item.nombre,
-									precio: item.precio
+									precio: item.precio,
 								};
 							}));
 						},
@@ -55,11 +55,8 @@
 					
 					return false; //retornamos false
 				}
-
 			});
-		}
-		);
-
+		});
 	</script>
 
 </body>

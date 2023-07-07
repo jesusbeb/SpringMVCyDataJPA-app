@@ -1,3 +1,7 @@
+/*
+ * Service es una fachada para trabajar con dao
+ */
+
 package com.bolsadeideas.springboot.app.models.service;
 
 import java.util.List;
@@ -9,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bolsadeideas.springboot.app.models.dao.IClienteDao;
+import com.bolsadeideas.springboot.app.models.dao.IProductoDao;
 import com.bolsadeideas.springboot.app.models.entity.Cliente;
+import com.bolsadeideas.springboot.app.models.entity.Producto;
 
 /*
  * Anotamos con Service, una clase Service esta basada en el patron de diseño facade o fachada. Es un punto de acceso a
@@ -22,6 +28,10 @@ public class ClienteServiceImpl implements IClienteService{
 	//Inyectamos el cliente Dao
 	@Autowired
 	private IClienteDao clienteDao;
+	
+	@Autowired
+	private IProductoDao productoDao;
+	
 	
 	//Movemos los Transactional de la clase Dao a la Service
 	@Override
@@ -64,6 +74,13 @@ public class ClienteServiceImpl implements IClienteService{
 	@Transactional(readOnly = true)
 	public Page<Cliente> findAll(Pageable pageable) {
 		return clienteDao.findAll(pageable);
+	}
+
+	//Implementamos el metodo
+	@Override
+	@Transactional(readOnly = true)
+	public List<Producto> findByNombre(String term) {
+		return productoDao.findByNombre(term);
 	}
 
 }
