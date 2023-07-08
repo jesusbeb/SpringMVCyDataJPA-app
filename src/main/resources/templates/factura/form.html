@@ -58,6 +58,22 @@
 					
 					<!--Plantilla para las lineas de la factura-->
 					<table th:replace="factura/plantilla-items :: itemsFactura"></table>
+					
+					<!--Tabla que contendra todas las lineas de la factura, cada linea se creara dinamicamente
+					del producto que se seleccione en el autocomplete
+					-->					
+					<table id="cargarItemProductos" class="table table-sm table-striped table-hover">
+					<thead> <!--Contiene las columnas-->
+						<tr>
+							<th>Nombre</th>
+							<th>Precio</th>
+							<th>Cantidad</th>
+						</tr>
+					</thead>
+					<tbody> <!--Aqui se crean las lineas de la factura-->
+						
+					</tbody>
+					</table>
 
 					<div class="form-group row">
 						<div class="col-sm-6">

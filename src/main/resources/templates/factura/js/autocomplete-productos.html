@@ -22,7 +22,7 @@
 						//maping url hacia un metodo handler del controlador que maneja la peticion ajax. 
 						//+ parametro variable a la ruta que contiene el texto que estamos escribiendo en el campo de texto.
 						//Dentro del parametro term del objeto request se almacena lo que se esta escribiendo
-						url: "/factura/cargar-productos/" + request.term, 
+						url: "/factura/cargar-productos/" + request.term,
 						dataType: "json", //tipo de dato json
 						//Opcionalmente pasamos el request.term como request.param, en un arreglo
 						//en este arreglo se puede guardar cualquier tipó de parametro que queramos enviar
@@ -46,13 +46,33 @@
 						},
 					});
 				},
+
+				//este codigo hace que se muestre el nombre del producto en el campo buscar en lugar de su id. Esto pasaba al usar las teclas de flechas
+				focus: function (event, ui) {
+					event.preventDefault();
+					$('input[name="buscar_producto"]').val(ui.item.label);
+				},
+
+
 				//implementamos el segundo metodo select que nos permite realizar cualquier tipo de tarea al seleccionar un elemento
 				//del autocomplete, por ejemplo al seleccionar y crear la linea de la factura o pasar el elemento seleccionado como valor al campo buscar producto
 				//en este caso tomaremos el label del producto y los mostraremos en el campo buscar producto
-				select: function(event, ui){
+				select: function (event, ui) {
 					//al campo buscar producto le pasamos el valor que es la etiqueta del producto
-					$("#buscar_producto").val(ui.item.label);
-					
+					//$("#buscar_producto").val(ui.item.label); //ya no se necesita
+
+					//creamos las lineas de la factura a traves de la plantilla para reemplazar {ID} {NOMBRE} {PRECIO}
+					//a traves del Id obtendremos el contenido de la plantilla
+					var linea = $("#plantillaItemsFactura").html();
+
+					//Reemplazamos los parametros por sus valores reales
+					//Los valores (item) los obtenemos a traves de ui.item.
+					linea = linea.replace(/{ID}/g, ui.item.value);
+					linea = linea.replace(/{NOMBRE}/g, ui.item.label);
+					linea = linea.replace(/{PRECIO}/g, ui.item.precio);
+					//agregamos la linea anterior al tbody de la tabla cargarItemProductos
+					$("#cargarItemProductos tbody").append(linea);
+
 					return false; //retornamos false
 				}
 			});
