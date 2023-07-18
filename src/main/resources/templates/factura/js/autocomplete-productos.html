@@ -119,6 +119,11 @@
 				$("#cantidad_" + id).val(++cantidad);
 				//actualizamos el importe invocando el metodo calcularImporte, usamos this ya que estamos dentro del mismo objeto itemsHelper
 				this.calcularImporte(id, precio, cantidad);
+			},
+			//Metodo para eliminar linea de la factura
+			eliminarLineaFactura: function(id){
+				//hacemos referencia al id de la fila en plantilla-items dentro del tr esta row_
+				$("#row_" + id).remove();
 			}
 		}
 	</script>

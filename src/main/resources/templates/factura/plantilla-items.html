@@ -24,6 +24,8 @@
 				id="cantidad_{ID}" class="form-control col-sm-4" onchange="itemsHelper.calcularImporte({ID},{PRECIO}, this.value)"/></td>
 			<!--Columna para el importe, por defecto ponemos cero-->
 			<td><span id="total_importe_{ID}">0</span></td>
+			<!--onclick llama a la funcion eliminarLineaFactura cada que se hace un click y pasamos el parametro ID-->
+			<td><a href="#" class="btn btn-danger btn-xs" onclick="itemsHelper.eliminarLineaFactura({ID});">x</a></td>
 		</tr>
 	</tbody>
 	
