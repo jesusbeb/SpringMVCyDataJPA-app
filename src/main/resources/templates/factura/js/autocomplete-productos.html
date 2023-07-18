@@ -60,6 +60,14 @@
 				select: function (event, ui) {
 					//al campo buscar producto le pasamos el valor que es la etiqueta del producto
 					//$("#buscar_producto").val(ui.item.label); //ya no se necesita
+					
+					//antes de crear una linea de factura, preguntamos si el producto existe
+					//usamos el metodo hasProducto que esta dentro del objeto itemsHelper y le pasamos el id que obtenemos a traves del objeto ui (user interface)
+					if(itemsHelper.hasProducto(ui.item.value)){
+						//si existe el producto, incrementamos la cantidad llamando al metodo, le pasamos el id y el precio
+						itemsHelper.incrementaCantidad(ui.item.value, ui.item.precio);
+						return false; //retornamos false ya que si el producto existe solo incrementa la cantidad en uno
+					}
 
 					//creamos las lineas de la factura a traves de la plantilla para reemplazar {ID} {NOMBRE} {PRECIO}
 					//a traves del Id obtendremos el contenido de la plantilla
@@ -81,12 +89,36 @@
 		});
 		
 		//Funcion para calcular el importe
-		//Definimos un objeto de JS llamado itemsHelper
+		//Definimos un objeto de JS llamado itemsHelper que contendra metodos que nos ayudaran
 		var itemsHelper = {
 			calcularImporte: function(id, precio, cantidad){
 				//#total_importe_ hace referencia a la columna del total y se le concantena el id
 				//.html permite agregar contenido, en lugar del cero por defecto, agregara el total (precio*cantidad)
 				$("#total_importe_" + id).html(parseInt(precio) * parseInt(cantidad));
+			},
+			//Esta funcion se encarga de buscar en cada linea de la factura si existe el id del producto
+			hasProducto: function(id){
+				
+				var resultado = false; //variable resultado y la inicializamos con false
+				//input[name="item_id[]"] hace referencia al input "item_id de la "plantilla-items" que contiene el valor del id
+				//con un each, usamos una funcion anonima para cada input que contenga el item_id[], preguntamos con if si
+				//el id que se pasa por argumento (parseado a entero) es igual al valor del input(parseado a entero)
+				$('input[name="item_id[]"]').each(function(){
+					if(parseInt(id) == parseInt($(this).val()) ){
+						resultado = true;	
+					}
+				});
+				return resultado;
+			},
+			//metodo que incrementa la cantidad de la linea ya existente. Pasamos id y precio
+			//no pasamos la cantidad ya que la obtenemos del id del elemento
+			incrementaCantidad: function(id,precio){
+				//obtenemos la cantidad del elemento, pero primero validamos si tiene un valor numerico, si tiene la convertimos en integer de lo contrario retornamos cero
+				var cantidad = $("#cantidad_" + id).val() ? parseInt($("#cantidad_" + id).val()) : 0;
+				//regresamos el valor incrementado al elemento input "cantidad_""
+				$("#cantidad_" + id).val(++cantidad);
+				//actualizamos el importe invocando el metodo calcularImporte, usamos this ya que estamos dentro del mismo objeto itemsHelper
+				this.calcularImporte(id, precio, cantidad);
 			}
 		}
 	</script>
