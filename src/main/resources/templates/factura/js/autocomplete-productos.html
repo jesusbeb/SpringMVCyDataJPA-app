@@ -95,6 +95,8 @@
 				//#total_importe_ hace referencia a la columna del total y se le concantena el id
 				//.html permite agregar contenido, en lugar del cero por defecto, agregara el total (precio*cantidad)
 				$("#total_importe_" + id).html(parseInt(precio) * parseInt(cantidad));
+				//Si se agrega un producto se tiene que llamar a la funcion calcularGranTotal para que actualice el total
+				this.calcularGranTotal();
 			},
 			//Esta funcion se encarga de buscar en cada linea de la factura si existe el id del producto
 			hasProducto: function(id){
@@ -124,6 +126,20 @@
 			eliminarLineaFactura: function(id){
 				//hacemos referencia al id de la fila en plantilla-items dentro del tr esta row_
 				$("#row_" + id).remove();
+				//Si se elimina una linea de la factura se tiene que actualizar el total de la factura:
+				this.calcularGranTotal();
+			},
+			//Metodo que calcula el total de toda la factura
+			calcularGranTotal: function(){
+				var total = 0;
+				
+				//Recorremos con un each todos los span que contengan total_importe. Se usa el caracter ^ para la expresion regular
+				$('span[id^="total_importe_"]').each(function(){
+					//Por cada span encontrado obtenemos su contenido, lo parseamos a Integer y lo sumamos al total
+					total += parseInt($(this).html());
+				});
+				//Asignamos el total al span con id gran_total que esta en el form.html
+				$('#gran_total').html(total);
 			}
 		}
 	</script>
