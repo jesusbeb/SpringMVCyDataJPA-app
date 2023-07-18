@@ -18,8 +18,12 @@
 			<td>{NOMBRE}</td>
 			<td>{PRECIO}</td>
 			<!--campo cantidad que es un arreglo de las cantidades de cada linea de factura-->
+			<!--onchange invoca el metodo calcularImporte cada que la cantidad del producto aumenta, para ir sumando el importe de manera dinamica
+			y se le envia el id, precio y cantidad que es el valor que se asigna en este input por lo que se usa this.value-->
 			<td><input type="number" value="1" name="cantidad[]" 
-				id="cantidad_{ID}" class="form-control col-sm-4" /></td>
+				id="cantidad_{ID}" class="form-control col-sm-4" onchange="itemsHelper.calcularImporte({ID},{PRECIO}, this.value)"/></td>
+			<!--Columna para el importe, por defecto ponemos cero-->
+			<td><span id="total_importe_{ID}">0</span></td>
 		</tr>
 	</tbody>
 	

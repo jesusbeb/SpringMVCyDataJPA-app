@@ -72,11 +72,23 @@
 					linea = linea.replace(/{PRECIO}/g, ui.item.precio);
 					//agregamos la linea anterior al tbody de la tabla cargarItemProductos
 					$("#cargarItemProductos tbody").append(linea);
+					//invocamos la funcion calcularImporte a traves de itemsHelper, le pasamos el id, precio y cantidad (1 por defecto)
+					itemsHelper.calcularImporte(ui.item.value, ui.item.precio, 1);
 
 					return false; //retornamos false
 				}
 			});
 		});
+		
+		//Funcion para calcular el importe
+		//Definimos un objeto de JS llamado itemsHelper
+		var itemsHelper = {
+			calcularImporte: function(id, precio, cantidad){
+				//#total_importe_ hace referencia a la columna del total y se le concantena el id
+				//.html permite agregar contenido, en lugar del cero por defecto, agregara el total (precio*cantidad)
+				$("#total_importe_" + id).html(parseInt(precio) * parseInt(cantidad));
+			}
+		}
 	</script>
 
 </body>
