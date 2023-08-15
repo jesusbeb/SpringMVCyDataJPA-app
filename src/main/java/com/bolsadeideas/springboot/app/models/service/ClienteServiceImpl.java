@@ -95,4 +95,12 @@ public class ClienteServiceImpl implements IClienteService{
 		facturaDao.save(factura);
 	}
 
+	//Metodo para obtener el producto por id y pasarlo a la linea, al entity ItemFactura
+	@Override
+	@Transactional(readOnly=true)
+	public Producto findProductoById(Long id) {
+		return productoDao.findById(id).orElse(null); //orElse para manejar un camino alternativo en caso de que no este en la consulta
+		
+	}
+
 }
